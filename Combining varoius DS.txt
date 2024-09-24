@@ -1,0 +1,299 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#define MAX_SIZE 100
+#define MAX_JOBS 100
+int ch;
+int stack[MAX_SIZE];
+int top = -1;
+void push(int data) 
+{
+ if (top == MAX_SIZE - 1)
+ {
+ printf("Error: Stack Overflow\n");
+ return;
+ }
+17
+ stack[++top] = data;
+}
+int pop()
+{
+ if (top == -1) 
+ {
+ printf("Error: Stack Underflow\n");
+ return -1;
+ }
+ return stack[top--];
+}
+void display() 
+{
+ int i;
+ if (top == -1)
+ {
+ printf("Error: Stack is Empty\n");
+ return;
+ }
+ printf("Stack elements: ");
+18
+ for (i = top; i >= 0; i--) 
+ {
+ printf("%d ", stack[i]);
+ }
+ printf("\n");
+}
+struct Node
+{
+ int data;
+ struct Node* next;
+};
+struct LinkedList
+{
+19
+ struct Node* head;
+};
+void add_node(struct LinkedList* linked_list, int data)
+{
+ struct Node* new_node = (struct Node*) malloc(sizeof(struct Node));
+ new_node->data = data;
+ new_node->next = NULL;
+ if (linked_list->head == NULL)
+ {
+ linked_list->head = new_node;
+ } 
+ else
+ {
+ struct Node* current = linked_list->head;
+ while (current->next != NULL)
+ {
+ current = current->next;
+ }
+ current->next = new_node;
+20
+ }
+}
+void display_linked_list(struct LinkedList* linked_list)
+{
+ struct Node* current = linked_list->head;
+ while (current != NULL) 
+ {
+ printf("%d\n", current->data);
+ current = current->next;
+ }
+}
+struct PrintJob
+{
+ int id;
+ char* content;
+};
+struct PrinterSpooler
+{
+ int front;
+ int rear;
+ int count;
+ struct PrintJob jobs[MAX_JOBS];
+};
+void init(struct PrinterSpooler* spooler)
+{
+ spooler->front = 0;
+ spooler->rear = -1;
+ spooler->count = 0;
+}
+bool isFull(struct PrinterSpooler spooler) 
+{
+ return spooler.count == MAX_JOBS;
+}
+22
+bool isEmpty(struct PrinterSpooler spooler)
+{
+ return spooler.count == 0;
+}
+void enqueue(struct PrinterSpooler* spooler, struct PrintJob job)
+{
+ if (isFull(*spooler))
+ {
+ printf("Printer spooler is full, can't add more jobs.\n");
+ return;
+ }
+ spooler->rear = (spooler->rear + 1) % MAX_JOBS;
+ spooler->jobs[spooler->rear] = job;
+ spooler->count++;
+}
+struct PrintJob dequeue(struct PrinterSpooler* spooler)
+{
+ if (isEmpty(*spooler))
+ {
+ printf("Printer spooler is empty, no jobs to print.\n");
+ exit(1);
+ }
+ struct PrintJob job = spooler->jobs[spooler->front];
+23
+ spooler->front = (spooler->front + 1) % MAX_JOBS;
+ spooler->count--;
+ return job;
+}
+void printJob(struct PrintJob job)
+{
+ printf("Printing job with id: %d, content: %s\n", job.id, job.content);
+}
+int main() 
+{
+ int choice, data;
+while (1) 
+{
+ printf("1. Undo Redo\n");
+ printf("2. sequencing\n");
+ printf("3. spooling\n");
+ printf("4. Exit\n");
+ 
+ printf("Enter your choice: ");
+ scanf("%d", &choice);
+ switch (choice)
+{
+ case 1: while (1)
+{
+ printf("1. Push\n");
+ printf("2. Pop\n");
+ printf("3. Display\n");
+ printf("4. Undo\n");
+ printf("5. Redo\n");
+ printf("6. Exit\n");
+25
+ printf("Enter your choice: ");
+ scanf("%d", &ch);
+ switch (ch)
+{
+ case 1:
+ printf("Enter the data to be pushed: ");
+ scanf("%d", &data);
+ push(data);
+ break;
+ case 2:
+ data = pop();
+ if (data != -1)
+{
+ printf("Popped element is %d\n", data);
+ }
+ break;
+ case 3:
+ display();
+ break;
+case 4:
+ data = pop();
+ if (data != -1) 
+{
+ printf("Popped element for undo is
+%d\n", data);
+ }
+26
+ break;
+ case 5:
+ printf("Enter the data to be pushed for 
+redo: ");
+ scanf("%d", &data);
+ push(data);
+ break;
+ case 6:
+ exit(0);
+ default:
+ printf("Error: Invalid Option\n");
+ }
+ }
+case 2: 
+ {
+ struct LinkedList linked_list;
+ linked_list.head = NULL;
+ add_node(&linked_list, 1);
+ add_node(&linked_list, 2);
+ add_node(&linked_list, 3);
+ add_node(&linked_list, 4);
+ display(&linked_list);
+ return 0;
+ } 
+ case 3: {
+ struct PrinterSpooler spooler;
+ init(&spooler);
+ struct PrintJob job1 = {1, "data analyst"};
+ enqueue(&spooler, job1);
+ struct PrintJob job2 = {2, "web developer"};
+ enqueue(&spooler, job2);
+ 
+28
+ struct PrintJob job3 = {3, "data scientish"};
+ enqueue(&spooler, job3);
+ 
+ struct PrintJob job4 = {4, "data analyst"};
+ enqueue(&spooler, job4);
+ 
+ struct PrintJob job5 = {5, "bussiness 
+analyst"};
+ enqueue(&spooler, job5);
+ 
+ struct PrintJob job6 = {6, "project 
+manager"};
+ enqueue(&spooler, job6);
+ 
+ struct PrintJob job7 = {7, "hr manager"};
+ enqueue(&spooler, job7);
+ 
+ struct PrintJob job8 = {8, "app developer"};
+ enqueue(&spooler, job2);
+ 
+ struct PrintJob job9 = {9, "content creater"};
+ enqueue(&spooler, job9);
+ 
+ struct PrintJob job10 = {10, "accountent"};
+ enqueue(&spooler, job10);
+ 
+29
+ struct PrintJob job11 = {11, "insurence"};
+ enqueue(&spooler, job11);
+ 
+ struct PrintJob job12 = {12, "product 
+developer"};
+ enqueue(&spooler, job12);
+ 
+ struct PrintJob job13 = {13, "produt 
+designer"};
+ enqueue(&spooler, job13);
+ 
+ struct PrintJob job14 = {14, "product 
+manager"};
+ enqueue(&spooler, job14);
+ 
+ struct PrintJob job15 = {15, "software 
+developer"};
+ enqueue(&spooler, job15);
+ 
+ struct PrintJob job16 = {16, "unix 
+developer"};
+ enqueue(&spooler, job16);
+ 
+ struct PrintJob job17 = {17, "full stack 
+developer"};
+ enqueue(&spooler, job17);
+30
+ 
+ struct PrintJob job18 = {18, "software 
+engineer"};
+ enqueue(&spooler, job18);
+ 
+ struct PrintJob job19 = {19, "front end 
+developer"};
+ enqueue(&spooler, job19);
+ 
+ struct PrintJob job20 = {20, "back end 
+developer"};
+ enqueue(&spooler, job20);
+ 
+ struct PrintJob job21 = {21, "android 
+developer"};
+ enqueue(&spooler, job21);
+ while (!isEmpty(spooler)) 
+ {
+ struct PrintJob job = dequeue(&spooler);
+ printJob(job);
+ }
+ return 0;
+ }
+ return 0;
+ }
